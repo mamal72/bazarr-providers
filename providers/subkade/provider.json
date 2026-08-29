@@ -1,0 +1,39 @@
+{
+  "api_version": "bazarr.provider-hub.v1",
+  "bundle_sha256": "4b375bc1e6576e505a9175f63ddfe8966028e5525394774dc7d123517324718c",
+  "config_schema": {
+    "additionalProperties": false,
+    "properties": {},
+    "type": "object"
+  },
+  "dependencies": {
+    "requirements": []
+  },
+  "description": "Persian (Farsi) subtitles from subkade.ir. Resolves the series by IMDB id and serves episodes from per-season archives, downloading each archive once. No login, API key or configuration required.",
+  "entry_class": "SubkadeProvider",
+  "entry_module": "provider",
+  "files": {
+    "provider.py": "a83ee6615654655e4a171641172127cfe18fa83aa91f368a2c12c6accf554f7c"
+  },
+  "languages": [
+    "fas"
+  ],
+  "name": "SubKade",
+  "provider_id": "subkade",
+  "schema_version": 1,
+  "secret_fields": [],
+  "source": {
+    "catalog_url": "https://github.com/mamal72/bazarr-providers/blob/main/catalog.json",
+    "commit": "0000000000000000000000000000000000000000",
+    "path": "providers/subkade",
+    "ref": "main",
+    "repo": "mamal72/bazarr-providers",
+    "trusted": false,
+    "type": "github"
+  },
+  "supported_media": [
+    "movie",
+    "episode"
+  ],
+  "version": "0.1.1"
+}

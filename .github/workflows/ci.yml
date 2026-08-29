@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: tests (py${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # The Provider Hub runs plugins under these interpreters, so the
+        # provider has to pass on all of them.
+        python-version: ["3.12", "3.13", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Run tests
+        run: python3 -B -m unittest discover -s tests -v
+
+      - name: Manifest hashes match the source
+        # A stale bundle_sha256 fails at install time with an unhelpful error,
+        # so catch it here instead. Recomputes and diffs rather than trusting
+        # whatever is committed.
+        run: python3 -B scripts/check_hashes.py
+
+      - name: Bundles contain only what the Hub accepts
+        # bundle.py rejects any file that is not *.py or provider.json.
+        run: python3 -B scripts/build_zip.py --all --check
+
+      - name: catalog.json is up to date
+        # This file is what Bazarr+ fetches when the repo is added as a
+        # catalog source, so a stale one silently serves old manifests.
+        run: python3 -B scripts/build_catalog.py --check

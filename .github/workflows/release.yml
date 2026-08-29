@@ -1,0 +1,46 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: build and attach subkade-hub.zip
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Never publish an artifact that has not passed the same checks as CI.
+      - name: Run tests
+        run: python3 -B -m unittest discover -s tests
+
+      - name: Manifest hashes match the source
+        run: python3 -B scripts/check_hashes.py
+
+      - name: Build every Provider Hub package
+        run: python3 -B scripts/build_zip.py --all
+
+      - name: Attach to the release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            *-hub.zip
+          body: |
+            **Bazarr+ Provider Hub packages**
+
+            Install any of the attached `*-hub.zip` files with
+            *Subtitle Hub → Marketplace → Install local package*.
+
+            Or add this repo as a catalog source and install from the
+            Marketplace directly — see the README.
+
+            For upstream Bazarr (LinuxServer image), use the bind-mount
+            method in the README; these packages are Provider Hub only.
